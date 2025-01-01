@@ -1,0 +1,12 @@
+{
+  "name": "Yu-Gi-Oh Lifepoints Counter",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.1.1"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "npmlog": "^7.0.1",
+    "socket.io": "^4.8.1"
+  }
+}
