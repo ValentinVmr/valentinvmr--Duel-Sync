@@ -21,9 +21,10 @@ module.exports = (socket, payload) => {
         amount
     );
 
-    delete updatedPlayersData.users;
-
-    const stringifiedData = JSON.stringify(updatedPlayersData);
+    const stringifiedData = JSON.stringify({
+        roomId: updatedPlayersData.id,
+        playersData: updatedPlayersData.data
+    });
 
     socket.emit('life-points-updated', stringifiedData);
     socket.to(roomId).emit('life-points-updated', stringifiedData);
