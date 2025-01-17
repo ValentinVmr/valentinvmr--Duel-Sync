@@ -4,14 +4,15 @@ import { useRoute } from "vue-router";
 import {onMounted, ref} from "vue";
 import YgoLifePoints from "@/components/YgoLifePoints.vue";
 import Calculator from "@/components/Calculator.vue";
+import useEnv from "@/services/env";
 
+const env = useEnv();
 const route = useRoute();
 const roomId = route.params.roomId;
 
-const URL = "https://vps-62f44913.vps.ovh.net";
+const URL = env.get('API_URL');
 const socket = io(URL);
 let pingID: number;
-
 
 onMounted(() => {
   socket.on("connect", () => {

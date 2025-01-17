@@ -15,6 +15,6 @@ io.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);
 });
 
-server.listen(3000, () => {
-    log.info("Server listening on port 3000");
+server.listen(8080, () => {
+    log.info("Server listening on port 8080");
 });
