@@ -12,11 +12,11 @@ module.exports = (socket, roomId) => {
 
     socket.join(roomId);
 
-
     const playersDataWithRoomId = room.getPlayersData();
     const data = {
         playersData: playersDataWithRoomId,
         roomId: roomId,
+        timer: room.getTimer()
     }
 
     socket.emit("room-joined", JSON.stringify(data));

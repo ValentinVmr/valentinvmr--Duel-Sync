@@ -10,7 +10,9 @@ module.exports = class Room {
             player2: {
                 name: "Player2",
                 lifepoints: 8000,
-            }
+            },
+            timer: 40 * 60, // 40 minutes in seconds
+            initialTimer: 40 * 60,
         }
     }
 
@@ -44,5 +46,19 @@ module.exports = class Room {
 
     getPlayersData() {
         return this.data;
+    }
+
+    getTimer() {
+        return this.data.timer;
+    }
+
+    resetTimer() {
+        this.data.timer = this.data.initialTimer;
+    }
+
+    tickTimer() {
+        if (this.data.timer > 0) {
+            this.data.timer -= 1;
+        }
     }
 }
