@@ -110,8 +110,8 @@ const startOrStopTimer = () => {
     </div>
     <div>
       <div class="sound-enable">
-        <input type="checkbox" id="enableSound" value="Play sound" :checked="enableSound">
-        <label for="enableSound">Activer / Désactiver le son</label>
+        <input type="checkbox" id="checkbox" v-model="enableSound" />
+        <label for="checkbox">Activer / Désactiver le son</label>
       </div>
       <button @click="resetDuel">Réinitialiser le duel</button>
       <Calculator @updateLifePoints="sendLifePointsUpdate($event)"></Calculator>
