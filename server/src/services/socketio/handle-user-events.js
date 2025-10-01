@@ -4,7 +4,8 @@ const {
     updateLifePointsHandler,
     startTimer,
     stopTimer,
-    resetTimer
+    resetTimer,
+    resetDuel
 } = require('./handlers')
 
 module.exports = (socket) => {
@@ -13,5 +14,6 @@ module.exports = (socket) => {
     socket.on('start-timer', (data) => startTimer(socket, data))
     socket.on('stop-timer', (data) => stopTimer(socket, data))
     socket.on('reset-timer', (data) => resetTimer(socket, data))
+    socket.on('reset-duel', (data) => resetDuel(socket, data))
     socket.on('disconnecting', removeUserHandler);
 }

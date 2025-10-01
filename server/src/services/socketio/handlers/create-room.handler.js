@@ -16,7 +16,8 @@ module.exports = (socket, roomId) => {
     const data = {
         playersData: playersDataWithRoomId,
         roomId: roomId,
-        timer: room.getTimer()
+        timer: room.getTimer(),
+        configuration: room.getConfiguration()
     }
 
     socket.emit("room-joined", JSON.stringify(data));

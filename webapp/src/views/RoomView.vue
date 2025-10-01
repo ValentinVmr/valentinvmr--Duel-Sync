@@ -31,13 +31,29 @@ onMounted(() => {
   socket.on("room-joined", updatePlayersData);
   socket.on("life-points-updated", updatePlayersData);
   socket.on('timer-updated', updateTimer)
+  socket.on('duel-reset', onDuelReset);
 });
+
+const enableSound = ref(true);
+const isTimerRunning = ref(false);
+const player1LP = ref(0);
+const player2LP = ref(0);
+const remainingTime = ref(0);
+const configuration = ref(null);
+
 const updatePlayersData = (data: string) => {
-  const pasedData = JSON.parse(data);
-  const playersData = pasedData.playersData;
+  const parsedData = JSON.parse(data);
+
+  const playersData = parsedData.playersData;
   player1LP.value = playersData.player1.lifepoints;
   player2LP.value = playersData.player2.lifepoints;
+
   remainingTime.value = playersData.timer;
+  configuration.value = parsedData.configuration;
+}
+
+const onDuelReset = (data: string) => {
+  updatePlayersData(data);
 }
 
 const updateTimer = (data: string) => {
@@ -49,11 +65,12 @@ const resetTimer = () => {
   socket.emit('reset-timer', payload);
 }
 
-const enableSound = ref(true);
-const isTimerRunning = ref(false);
-const player1LP = ref(0);
-const player2LP = ref(0);
-const remainingTime = ref(0);
+const resetDuel = () => {
+  const payload = JSON.stringify({ roomId: roomId });
+  socket.emit('reset-duel', payload);
+}
+
+
 
 const sendLifePointsUpdate = (data: {player: number, operation: string, amount: number}) => {
   const playerId = `player${data.player}`;
@@ -96,6 +113,7 @@ const startOrStopTimer = () => {
         <input type="checkbox" id="enableSound" value="Play sound" :checked="enableSound">
         <label for="enableSound">Activer / Désactiver le son</label>
       </div>
+      <button @click="resetDuel">Réinitialiser le duel</button>
       <Calculator @updateLifePoints="sendLifePointsUpdate($event)"></Calculator>
     </div>
   </main>

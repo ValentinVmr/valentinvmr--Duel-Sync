@@ -12,7 +12,10 @@ module.exports = class Room {
                 lifepoints: 8000,
             },
             timer: 40 * 60, // 40 minutes in seconds
-            initialTimer: 40 * 60,
+            configuration: {
+                startingLifePoints: 8000,
+                initialTimer: 40 * 60,
+            }
         }
     }
 
@@ -52,8 +55,23 @@ module.exports = class Room {
         return this.data.timer;
     }
 
+    getConfiguration() {
+        return this.data.configuration;
+    }
+
     resetTimer() {
-        this.data.timer = this.data.initialTimer;
+        this.data.timer = this.data.configuration.initialTimer;
+    }
+
+    resetLifePoints() {
+        this.data.player1.lifepoints = this.data.configuration.startingLifePoints;
+        this.data.player2.lifepoints = this.data.configuration.startingLifePoints;
+    }
+
+    resetRoom() {
+        this.resetLifePoints();
+        this.resetTimer();
+        return this;
     }
 
     tickTimer() {
