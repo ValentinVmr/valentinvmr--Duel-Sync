@@ -28,10 +28,11 @@ onMounted(() => {
     clearInterval(pingID);
   });
 
-  socket.on("room-joined", updatePlayersData);
+  socket.on("room-joined", onRoomJoined);
   socket.on("life-points-updated", updatePlayersData);
   socket.on('timer-updated', updateTimer)
   socket.on('duel-reset', onDuelReset);
+  socket.on('configuration-updated', onConfigurationUpdated)
 });
 
 const enableSound = ref(true);
@@ -39,7 +40,23 @@ const isTimerRunning = ref(false);
 const player1LP = ref(0);
 const player2LP = ref(0);
 const remainingTime = ref(0);
-const configuration = ref(null);
+const configuration = ref({startingLifePoints: 8000, initialTimer: 40 * 60});
+const newConfiguration = ref({startingLifePoints: 8000, initialTimer: 40 * 60});
+const darkMode = ref(true);
+
+const onRoomJoined = (data: string) => {
+  const parsedData = JSON.parse(data);
+
+  remainingTime.value = parsedData.timer;
+  configuration.value = parsedData.configuration;
+  newConfiguration.value = Object.assign({}, parsedData.configuration);
+
+  updatePlayersData(data);
+}
+
+const onConfigurationUpdated = (data: string) => {
+  onRoomJoined(data);
+}
 
 const updatePlayersData = (data: string) => {
   const parsedData = JSON.parse(data);
@@ -47,9 +64,6 @@ const updatePlayersData = (data: string) => {
   const playersData = parsedData.playersData;
   player1LP.value = playersData.player1.lifepoints;
   player2LP.value = playersData.player2.lifepoints;
-
-  remainingTime.value = playersData.timer;
-  configuration.value = parsedData.configuration;
 }
 
 const onDuelReset = (data: string) => {
@@ -61,18 +75,23 @@ const updateTimer = (data: string) => {
 }
 
 const resetTimer = () => {
-  const payload = JSON.stringify({ roomId: roomId });
+  const payload = JSON.stringify({roomId: roomId});
   socket.emit('reset-timer', payload);
 }
 
 const resetDuel = () => {
-  const payload = JSON.stringify({ roomId: roomId });
+  const payload = JSON.stringify({roomId: roomId});
   socket.emit('reset-duel', payload);
 }
 
+const getTimerMinutesAndSeconds = (timerInSeconds: number) => {
+  const minutes = Math.floor(timerInSeconds / 60);
+  const seconds = timerInSeconds % 60;
 
+  return {minutes, seconds};
+}
 
-const sendLifePointsUpdate = (data: {player: number, operation: string, amount: number}) => {
+const sendLifePointsUpdate = (data: { player: number, operation: string, amount: number }) => {
   const playerId = `player${data.player}`;
 
   const payload = JSON.stringify({
@@ -88,7 +107,7 @@ const sendLifePointsUpdate = (data: {player: number, operation: string, amount: 
 const startOrStopTimer = () => {
   isTimerRunning.value = !isTimerRunning.value;
 
-  const payload = JSON.stringify({ roomId: roomId });
+  const payload = JSON.stringify({roomId: roomId});
 
   if (isTimerRunning.value) {
     socket.emit('start-timer', payload);
@@ -97,33 +116,104 @@ const startOrStopTimer = () => {
   }
 }
 
+const changeInitialTimer = () => {
+  const minutesInput = document.getElementById('minutes') as HTMLInputElement;
+  const secondsInput = document.getElementById('seconds') as HTMLInputElement;
+
+  let minutes = parseInt(minutesInput.value);
+  let seconds = parseInt(secondsInput.value);
+
+  if (isNaN(minutes) || minutes < 0) {
+    minutes = 0;
+    minutesInput.value = '0';
+  }
+
+  if (isNaN(seconds) || seconds < 0) {
+    seconds = 0;
+    secondsInput.value = '0';
+  } else if (seconds > 59) {
+    seconds = 59;
+    secondsInput.value = '59';
+  }
+
+  newConfiguration.value.initialTimer = (minutes * 60) + seconds;
+}
+
+const hasConfigurationChanged = () => {
+  return configuration.value.startingLifePoints !== newConfiguration.value.startingLifePoints ||
+    configuration.value.initialTimer !== newConfiguration.value.initialTimer;
+}
+
+const saveConfiguration = () => {
+  const payload = JSON.stringify({
+    roomId: roomId,
+    configuration: newConfiguration.value
+  });
+
+  socket.emit('update-configuration', payload);
+}
+
+const setStartingLifePoints = (points: number) => {
+  newConfiguration.value.startingLifePoints = points;
+}
+
 </script>
 
 <template>
   <main>
     <div class="points">
-      <YgoLifePoints :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player1LP" />
-      <YgoLifePoints :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player2LP" />
-      <Timer :time="remainingTime" />
+      <YgoLifePoints :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player1LP"/>
+      <YgoLifePoints :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player2LP"/>
+      <Timer :time="remainingTime"/>
       <button @click="startOrStopTimer">Démarrer / Arrêter le timer</button>
       <button @click="resetTimer">Réinitialiser le timer</button>
     </div>
     <div>
-      <div class="sound-enable">
-        <input type="checkbox" id="checkbox" v-model="enableSound" />
-        <label for="checkbox">Activer / Désactiver le son</label>
-      </div>
-      <button @click="resetDuel">Réinitialiser le duel</button>
       <Calculator @updateLifePoints="sendLifePointsUpdate($event)"></Calculator>
     </div>
   </main>
+
+  <aside class="configuration">
+    <h2>Options</h2>
+    <div class="configuration__options">
+      <div class="dark-theme">
+        <label for="dark-theme">Thème sombre (à venir)</label>
+        <input type="checkbox" id="dark-theme" v-model="darkMode"/>
+      </div>
+      <div class="sound-effects">
+        <label for="sound-effects">Effets sonores</label>
+        <input type="checkbox" id="sound-effects" v-model="enableSound"/>
+      </div>
+      <hr>
+      <div class="starting-life-points">
+        <h3>Points de vie de départ</h3>
+        <input type="number" v-model.number="newConfiguration.startingLifePoints"/>
+        <div class="default-life-points">
+          <button @click="setStartingLifePoints(8000)">8000</button>
+          <button @click="setStartingLifePoints(12000)">12000</button>
+          <button @click="setStartingLifePoints(16000)">16000</button>
+        </div>
+      </div>
+      <hr>
+      <div class="duel-timer">
+        <h3>Horloge</h3>
+        <div class="minutes">
+          <label for="minutes">Minutes</label>
+          <input type="number" id="minutes" @change="changeInitialTimer()" :value="getTimerMinutesAndSeconds(newConfiguration.initialTimer).minutes"/>
+        </div>
+        <div class="seconds">
+          <label for="seconds">Secondes</label>
+          <input type="number" id="seconds" @change="changeInitialTimer()" :value="getTimerMinutesAndSeconds(newConfiguration.initialTimer).seconds"/>
+        </div>
+        <hr>
+        <button @click="resetDuel()">Réinitialiser le duel</button>
+        <button v-if="hasConfigurationChanged()" @click="saveConfiguration()">Sauvegarder la configuration</button>
+      </div>
+    </div>
+  </aside>
 </template>
 
 <style>
-.sound-enable {
-  margin-bottom: 1rem;
-}
-
 main {
   display: flex;
   flex-direction: column;

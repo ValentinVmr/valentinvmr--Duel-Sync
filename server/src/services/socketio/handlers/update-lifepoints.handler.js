@@ -1,17 +1,8 @@
 const updateLifePointsUseCase = require('../../../components/update_lifepoints');
-const log = require("npmlog");
+const useParser = require('../../utils/useParseData')();
 
 module.exports = (socket, payload) => {
-    var parseData;
-
-    try {
-        parseData = JSON.parse(payload || "{}");
-    } catch (error) {
-        log.error(error);
-        return;
-    }
-
-    const { roomId, playerId, operation, amount } = parseData;
+    const { roomId, playerId, operation, amount } = useParser.parse(payload);
 
     const updatedPlayersData = updateLifePointsUseCase.execute(
         socket.id,

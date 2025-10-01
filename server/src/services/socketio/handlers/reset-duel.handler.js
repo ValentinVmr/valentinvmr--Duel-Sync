@@ -1,5 +1,6 @@
 const resetDuelUseCase = require('../../../components/reset_duel');
 const log = require("npmlog");
+const useBuildDto = require('../../utils/useBuildDto')();
 
 module.exports = (socket, payload) => {
     var parseData;
@@ -15,14 +16,7 @@ module.exports = (socket, payload) => {
     const userId = socket.id;
 
     const room = resetDuelUseCase.execute({roomId, userId});
-
-    console.log(room)
-    const data = {
-        playersData: room.data,
-        roomId: roomId,
-        timer: room.getTimer(),
-        configuration: room.getConfiguration()
-    }
+    const data = useBuildDto.roomDto(room);
 
     const payloadToSend =  JSON.stringify(data);
     socket.to(roomId).emit('duel-reset', payloadToSend);

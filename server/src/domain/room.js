@@ -74,6 +74,10 @@ module.exports = class Room {
         return this;
     }
 
+    updateConfiguration(newConfiguration) {
+        this.data.configuration = { ...this.data.configuration, ...newConfiguration };
+    }
+
     tickTimer() {
         if (this.data.timer > 0) {
             this.data.timer -= 1;

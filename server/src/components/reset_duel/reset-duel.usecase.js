@@ -9,7 +9,10 @@ module.exports = class ResetDuelUseCase {
         this.checkUserInRoom.execute({roomId, userId});
 
         const room = this.roomManager.getRoom(roomId);
-        this.timerService.stopTimer(roomId);
+
+        if(this.timerService.isTimerRunning(roomId)) {
+            this.timerService.stopTimer(roomId);
+        }
         return room.resetRoom();
     }
 }
