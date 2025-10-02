@@ -6,6 +6,3 @@ const ResetDuelUseCase = require('../reset_duel')
 UpdateConfigurationConstructor._instance = UpdateConfigurationConstructor._instance || new UpdateConfigurationConstructor(RoomManagerService, CheckIfUserInRoomUseCase, ResetDuelUseCase);
 
 module.exports = UpdateConfigurationConstructor._instance;
-
-
-
