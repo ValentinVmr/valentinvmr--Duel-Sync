@@ -39,10 +39,10 @@ const updateLifePoints = (player: number, operation: string) => {
         <button @click="handleButtonClick('0')">0</button>
       </div>
       <div class="calculator-actions">
-        <button @click="updateLifePoints(1, 'add')">+ J1</button>
-        <button @click="updateLifePoints(1, 'sub')">- J1</button>
-        <button @click="updateLifePoints(2, 'add')">+ J2</button>
-        <button @click="updateLifePoints(2, 'sub')">- J2</button>
+        <button @click="updateLifePoints(1, 'add')">+ D1</button>
+        <button @click="updateLifePoints(1, 'sub')">- D1</button>
+        <button @click="updateLifePoints(2, 'add')">+ D2</button>
+        <button @click="updateLifePoints(2, 'sub')">- D2</button>
       </div>
     </div>
   </div>

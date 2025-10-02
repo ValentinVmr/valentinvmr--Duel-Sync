@@ -11,6 +11,9 @@ module.exports = class UpdateConfigurationUseCase {
         const room = this.roomManager.getRoom(roomId);
         room.updateConfiguration(configuration);
 
-        return this.resetDuelUseCase.execute({roomId, userId});
+        this.resetDuelUseCase.execute({roomId, userId});
+
+        this.roomManager.update(roomId, room);
+        return room;
     }
 }

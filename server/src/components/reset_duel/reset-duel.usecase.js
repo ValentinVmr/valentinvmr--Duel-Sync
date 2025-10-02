@@ -13,6 +13,10 @@ module.exports = class ResetDuelUseCase {
         if(this.timerService.isTimerRunning(roomId)) {
             this.timerService.stopTimer(roomId);
         }
-        return room.resetRoom();
+
+        room.resetRoom();
+        this.roomManager.update(roomId, room);
+
+        return room;
     }
 }

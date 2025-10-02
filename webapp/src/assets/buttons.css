@@ -1,0 +1,24 @@
+.ds-button {
+    color: var(--text-primary);
+    background-color: var(--color-secondary-500);
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    box-sizing: border-box;
+    font-weight: 600;
+    font-size: 1rem;
+
+    &:hover {
+        background-color: var(--color-secondary-600);
+    }
+
+    &:active {
+        background-color: var(--color-secondary-700);
+    }
+
+    &:disabled {
+        background-color: var(--color-gray-600);
+        cursor: not-allowed;
+    }
+}

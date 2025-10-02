@@ -1,4 +1,16 @@
 @import './base.css';
+@import './palette.css';
+@import './buttons.css';
+@import './inputs.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--color-primary-500);
+  overflow: hidden;
+}
 
 #app {
   max-width: 1280px;
@@ -29,7 +41,7 @@ a,
 
   #app {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     padding: 0 2rem;
   }
 }

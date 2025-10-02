@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import {io} from "socket.io-client";
 import {useRoute} from "vue-router";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import YgoLifePoints from "@/components/YgoLifePoints.vue";
 import Calculator from "@/components/Calculator.vue";
 import useEnv from "@/services/env";
 import Timer from "@/components/Timer.vue";
+import type Configuration from "@/types/configuration.model.ts";
+import ConfigurationLayer from "@/components/ConfigurationLayer.vue";
+import SettingsIcon from "@/components/icons/SettingsIcon.vue";
 
 const env = useEnv();
 const route = useRoute();
@@ -36,21 +39,19 @@ onMounted(() => {
 });
 
 const enableSound = ref(true);
+const darkMode = ref(true);
 const isTimerRunning = ref(false);
 const player1LP = ref(0);
 const player2LP = ref(0);
 const remainingTime = ref(0);
-const configuration = ref({startingLifePoints: 8000, initialTimer: 40 * 60});
-const newConfiguration = ref({startingLifePoints: 8000, initialTimer: 40 * 60});
-const darkMode = ref(true);
+const configuration = ref({} as Configuration);
+const showOptions = ref(false);
 
 const onRoomJoined = (data: string) => {
   const parsedData = JSON.parse(data);
 
   remainingTime.value = parsedData.timer;
   configuration.value = parsedData.configuration;
-  newConfiguration.value = Object.assign({}, parsedData.configuration);
-
   updatePlayersData(data);
 }
 
@@ -67,11 +68,13 @@ const updatePlayersData = (data: string) => {
 }
 
 const onDuelReset = (data: string) => {
+  updateTimer(data);
   updatePlayersData(data);
 }
 
 const updateTimer = (data: string) => {
   remainingTime.value = JSON.parse(data).timer;
+  isTimerRunning.value = true;
 }
 
 const resetTimer = () => {
@@ -82,13 +85,6 @@ const resetTimer = () => {
 const resetDuel = () => {
   const payload = JSON.stringify({roomId: roomId});
   socket.emit('reset-duel', payload);
-}
-
-const getTimerMinutesAndSeconds = (timerInSeconds: number) => {
-  const minutes = Math.floor(timerInSeconds / 60);
-  const seconds = timerInSeconds % 60;
-
-  return {minutes, seconds};
 }
 
 const sendLifePointsUpdate = (data: { player: number, operation: string, amount: number }) => {
@@ -116,45 +112,29 @@ const startOrStopTimer = () => {
   }
 }
 
-const changeInitialTimer = () => {
-  const minutesInput = document.getElementById('minutes') as HTMLInputElement;
-  const secondsInput = document.getElementById('seconds') as HTMLInputElement;
-
-  let minutes = parseInt(minutesInput.value);
-  let seconds = parseInt(secondsInput.value);
-
-  if (isNaN(minutes) || minutes < 0) {
-    minutes = 0;
-    minutesInput.value = '0';
+watch(configuration, (newVal, oldVal) => {
+  if (!oldVal || !oldVal?.startingLifePoints) {
+    return;
   }
 
-  if (isNaN(seconds) || seconds < 0) {
-    seconds = 0;
-    secondsInput.value = '0';
-  } else if (seconds > 59) {
-    seconds = 59;
-    secondsInput.value = '59';
+  if (JSON.stringify(newVal) === JSON.stringify(oldVal)) {
+    return;
   }
 
-  newConfiguration.value.initialTimer = (minutes * 60) + seconds;
-}
+  console.log('Old configuration:', oldVal);
+  console.log('Configuration changed, saving...', newVal);
 
-const hasConfigurationChanged = () => {
-  return configuration.value.startingLifePoints !== newConfiguration.value.startingLifePoints ||
-    configuration.value.initialTimer !== newConfiguration.value.initialTimer;
-}
+  saveConfiguration(newVal);
 
-const saveConfiguration = () => {
+}, {deep: true});
+
+const saveConfiguration = (newConfiguration: Configuration) => {
   const payload = JSON.stringify({
     roomId: roomId,
-    configuration: newConfiguration.value
+    configuration: newConfiguration
   });
 
   socket.emit('update-configuration', payload);
-}
-
-const setStartingLifePoints = (points: number) => {
-  newConfiguration.value.startingLifePoints = points;
 }
 
 </script>
@@ -172,45 +152,17 @@ const setStartingLifePoints = (points: number) => {
       <Calculator @updateLifePoints="sendLifePointsUpdate($event)"></Calculator>
     </div>
   </main>
+  <button @click="showOptions = !showOptions" class="show-options-button">
+    <SettingsIcon class="icon" />
+  </button>
+  <ConfigurationLayer v-if="configuration?.startingLifePoints"
+                      v-model="configuration"
+                      v-model:dark-mode="darkMode"
+                      v-model:enable-sound="enableSound"
+                      v-model:show-options="showOptions"
+                      @reset-duel="resetDuel"/>
 
-  <aside class="configuration">
-    <h2>Options</h2>
-    <div class="configuration__options">
-      <div class="dark-theme">
-        <label for="dark-theme">Thème sombre (à venir)</label>
-        <input type="checkbox" id="dark-theme" v-model="darkMode"/>
-      </div>
-      <div class="sound-effects">
-        <label for="sound-effects">Effets sonores</label>
-        <input type="checkbox" id="sound-effects" v-model="enableSound"/>
-      </div>
-      <hr>
-      <div class="starting-life-points">
-        <h3>Points de vie de départ</h3>
-        <input type="number" v-model.number="newConfiguration.startingLifePoints"/>
-        <div class="default-life-points">
-          <button @click="setStartingLifePoints(8000)">8000</button>
-          <button @click="setStartingLifePoints(12000)">12000</button>
-          <button @click="setStartingLifePoints(16000)">16000</button>
-        </div>
-      </div>
-      <hr>
-      <div class="duel-timer">
-        <h3>Horloge</h3>
-        <div class="minutes">
-          <label for="minutes">Minutes</label>
-          <input type="number" id="minutes" @change="changeInitialTimer()" :value="getTimerMinutesAndSeconds(newConfiguration.initialTimer).minutes"/>
-        </div>
-        <div class="seconds">
-          <label for="seconds">Secondes</label>
-          <input type="number" id="seconds" @change="changeInitialTimer()" :value="getTimerMinutesAndSeconds(newConfiguration.initialTimer).seconds"/>
-        </div>
-        <hr>
-        <button @click="resetDuel()">Réinitialiser le duel</button>
-        <button v-if="hasConfigurationChanged()" @click="saveConfiguration()">Sauvegarder la configuration</button>
-      </div>
-    </div>
-  </aside>
+
 </template>
 
 <style>
@@ -228,4 +180,18 @@ div.points {
   flex-direction: column;
   gap: 2rem;
 }
+
+.show-options-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: transparent;
+  fill: var(--text-primary);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 </style>
