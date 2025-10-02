@@ -12,8 +12,7 @@ const props = defineProps({
     default: 2
   },
   isSoundEnabled: {
-    type: Boolean,
-    default: true
+    type: Boolean
   }
 });
 
@@ -21,6 +20,7 @@ const lifePoints = ref(props.lifePoints);
 const digits = ref([8, 0, 0, 0]);
 const digitKeys = ref(['digit1', 'digit2', 'digit3', 'digit4']);
 const direction = ref('up');
+
 
 watch(() => props.lifePoints, (newValue, oldValue) => {
   lifePoints.value = newValue;
