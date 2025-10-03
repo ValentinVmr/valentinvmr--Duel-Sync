@@ -4,7 +4,7 @@ Yu-Gi-Oh! Duel Sync. is an application to track life points during your remote d
 To do so, the application will create a SocketIO room where you can invite your friends to join and start a duel.
 
 ## Demo
-You can visit the [demo](https://ygo-life-points-webapp.vercel.app/) to see the application in action.
+You can visit the [demo](https://duel-sync.vercel.app/) to see the application in action.
 
 ## Installation
 To install the application, you need to clone the repository and install the dependencies.
