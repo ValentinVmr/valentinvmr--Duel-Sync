@@ -160,9 +160,9 @@ const saveConfiguration = (newConfiguration: Configuration) => {
     </button>
     <div class="content">
       <div class="points">
-        <YgoLifePoints duelist-name="Duelist 1" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player1LP"/>
-        <Timer :time="remainingTime" v-model="isTimerRunning" @reset-timer="resetTimer"/>
-        <YgoLifePoints duelist-name="Duelist 2" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player2LP"/>
+        <YgoLifePoints class="lp" duelist-name="Duelist 1" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player1LP"/>
+        <Timer class="timer" :time="remainingTime" v-model="isTimerRunning" @reset-timer="resetTimer"/>
+        <YgoLifePoints class="lp" duelist-name="Duelist 2" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player2LP"/>
       </div>
       <div>
         <Calculator @updateLifePoints="sendLifePointsUpdate($event)"></Calculator>
@@ -199,10 +199,24 @@ div.points {
   display: flex;
   gap: 2rem;
   align-items: center;
+  width: 700px;
 
-  @media screen and (max-width: 680px) {
+  .lp {
+    width: calc(100% / 3);
+  }
+
+  .timer {
+    width: calc(100% / 3);
+  }
+
+  @media screen and (max-width: 720px) {
     flex-direction: column;
     align-items: stretch;
+    width: initial;
+
+    .lp, .timer {
+      width: 100% ;
+    }
   }
 }
 

@@ -34,7 +34,7 @@ const resetTimer = () => {
       <div class="remaining-time">
         <TimerIcon class="timer-icon"/>
         <span class="minutes">{{ remainingMinutes() }}</span>
-        <span>:</span>
+        <span class="separator">:</span>
         <span class="seconds">{{ remainingSeconds().toString().padStart(2, '0') }}</span>
       </div>
     </div>
@@ -51,6 +51,11 @@ const resetTimer = () => {
 </template>
 
 <style scoped>
+.minutes, .seconds {
+  width: 2rem;
+  text-align: center;
+}
+
 .timer {
   display: flex;
   flex-direction: column;
