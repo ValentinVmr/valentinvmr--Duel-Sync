@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {ref} from 'vue';
+import CalculatorIcon from "@/components/icons/CalculatorIcon.vue";
 
 const input = ref('');
 
@@ -17,42 +18,54 @@ const updateLifePoints = (player: number, operation: string) => {
   const amount = parseInt(input.value);
   if (isNaN(amount)) return;
 
-  emit('update-life-points', { player, operation, amount });
+  emit('update-life-points', {player, operation, amount});
   clearInput();
 };
 </script>
 
 <template>
   <div class="calculator">
-    <input v-model="input" class="calculator-input"/>
-    <div class="calculator-body">
-      <div class="calculator-buttons">
-        <button @click="handleButtonClick('1')">1</button>
-        <button @click="handleButtonClick('2')">2</button>
-        <button @click="handleButtonClick('3')">3</button>
-        <button @click="handleButtonClick('4')">4</button>
-        <button @click="handleButtonClick('5')">5</button>
-        <button @click="handleButtonClick('6')">6</button>
-        <button @click="handleButtonClick('7')">7</button>
-        <button @click="handleButtonClick('8')">8</button>
-        <button @click="handleButtonClick('9')">9</button>
-        <button @click="handleButtonClick('0')">0</button>
-      </div>
-      <div class="calculator-actions">
-        <button @click="updateLifePoints(1, 'add')">+ D1</button>
-        <button @click="updateLifePoints(1, 'sub')">- D1</button>
-        <button @click="updateLifePoints(2, 'add')">+ D2</button>
-        <button @click="updateLifePoints(2, 'sub')">- D2</button>
+    <div class="calculator-content">
+      <input v-model="input" class="calculator-input"/>
+      <div class="calculator-body">
+        <div class="calculator-buttons">
+          <button @click="handleButtonClick('1')">1</button>
+          <button @click="handleButtonClick('2')">2</button>
+          <button @click="handleButtonClick('3')">3</button>
+          <button @click="handleButtonClick('4')">4</button>
+          <button @click="handleButtonClick('5')">5</button>
+          <button @click="handleButtonClick('6')">6</button>
+          <button @click="handleButtonClick('7')">7</button>
+          <button @click="handleButtonClick('8')">8</button>
+          <button @click="handleButtonClick('9')">9</button>
+          <button @click="handleButtonClick('0')">0</button>
+        </div>
+        <div class="calculator-actions">
+          <button @click="updateLifePoints(1, 'add')">+ D1</button>
+          <button @click="updateLifePoints(1, 'sub')">- D1</button>
+          <button @click="updateLifePoints(2, 'add')">+ D2</button>
+          <button @click="updateLifePoints(2, 'sub')">- D2</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+
 .calculator {
+  margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+}
+
+.calculator-content {
+  background: var(--color-primary-800);
+  padding: 1rem;
+  border-radius: 10px;
+  border: 2px solid var(--color-primary-500);
 }
 
 .calculator-input {
@@ -62,10 +75,12 @@ const updateLifePoints = (player: number, operation: string) => {
   margin-bottom: 10px;
   font-size: 24px;
   user-select: none; /* Make text non-selectable */
-  border: 2px solid #add8e6; /* pastel blue */
+  border: 2px solid var(--color-primary-300); /* pastel blue */
   border-radius: 8px;
   padding: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background: var(--color-primary-100);
+  color: var(--text-primary);
 }
 
 .calculator-body {
@@ -79,39 +94,43 @@ const updateLifePoints = (player: number, operation: string) => {
   margin-right: 10px;
 }
 
-.calculator-buttons button {
-  width: 60px;
-  height: 60px;
-  font-size: 24px;
-  background-color: #f0e68c; /* pastel yellow */
-  border: none;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
-  user-select: none; /* Make text non-selectable */
-}
-
-.calculator-buttons button:hover {
-  background-color: #ffd700; /* gold */
-}
-
 .calculator-actions {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+
 .calculator-actions button {
   width: 60px;
   height: 60px;
-  font-size: 18px;
-  background-color: #add8e6; /* pastel blue */
+  font-size: 1.25rem;
+  background-color: var(--color-secondary-300);
+  color: var(--text-primary);
   border: none;
   border-radius: 8px;
   transition: background-color 0.3s ease;
-  user-select: none; /* Make text non-selectable */
+  user-select: none;
 }
 
 .calculator-actions button:hover {
-  background-color: #87ceeb; /* sky blue */
+  background-color: var(--color-secondary-500);
+  cursor: pointer;
+}
+.calculator-buttons button {
+  width: 60px;
+  height: 60px;
+  font-size: 1.5rem;
+  background-color: var(--color-primary-300);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.calculator-buttons button:hover {
+  background-color: var(--color-primary-600);
+  cursor: pointer;
 }
 </style>

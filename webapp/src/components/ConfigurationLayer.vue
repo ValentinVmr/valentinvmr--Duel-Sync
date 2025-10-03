@@ -12,10 +12,18 @@ const props = defineProps<{
   showOptions: boolean
 }>();
 
+const getTimerMinutesAndSeconds = (timerInSeconds: number) => {
+  const minutes = Math.floor(timerInSeconds / 60);
+  const seconds = timerInSeconds % 60;
+
+  return {minutes, seconds};
+}
+
 const darkMode = ref(props.darkMode);
 const enableSound = ref(props.enableSound);
-const configuration = ref<Configuration>(props.modelValue);
-
+const configuration = ref<Configuration>(Object.assign({}, props.modelValue));
+const minutesInput = ref(getTimerMinutesAndSeconds(configuration.value.initialTimer).minutes);
+const secondsInput = ref(getTimerMinutesAndSeconds(configuration.value.initialTimer).seconds);
 const emits = defineEmits<{
   (e: 'update:modelValue', value: Configuration): void,
   (e: 'reset-duel'): void,
@@ -32,31 +40,22 @@ const setStartingLifePoints = (points: number) => {
   configuration.value.startingLifePoints = points;
 }
 
-const getTimerMinutesAndSeconds = (timerInSeconds: number) => {
-  const minutes = Math.floor(timerInSeconds / 60);
-  const seconds = timerInSeconds % 60;
-
-  return {minutes, seconds};
-}
-
 const changeInitialTimer = () => {
-  const minutesInput = document.getElementById('minutes') as HTMLInputElement;
-  const secondsInput = document.getElementById('seconds') as HTMLInputElement;
 
-  let minutes = parseInt(minutesInput.value);
-  let seconds = parseInt(secondsInput.value);
+  let minutes = minutesInput.value;
+  let seconds = secondsInput.value;
 
   if (isNaN(minutes) || minutes < 0) {
     minutes = 0;
-    minutesInput.value = '0';
+    minutesInput.value = 0;
   }
 
   if (isNaN(seconds) || seconds < 0) {
     seconds = 0;
-    secondsInput.value = '0';
+    secondsInput.value = 0;
   } else if (seconds > 59) {
     seconds = 59;
-    secondsInput.value = '59';
+    secondsInput.value = 59;
   }
 
   configuration.value.initialTimer = (minutes * 60) + seconds;
@@ -81,12 +80,20 @@ watch(darkMode, (newValue) => {
 watch(enableSound, (newValue) => {
   emits('update:enableSound', newValue);
 });
+
+watch(minutesInput, () => {
+  changeInitialTimer();
+});
+
+watch(secondsInput, () => {
+  changeInitialTimer();
+});
 </script>
 
 <template>
   <div class="configuration" :class="{ toggled: showOptions }">
     <button class="close-button" @click="$emit('update:showOptions', false)">
-      <CrossIcon />
+      <CrossIcon/>
     </button>
     <h2>Options</h2>
     <div class="configuration__options">
@@ -113,19 +120,19 @@ watch(enableSound, (newValue) => {
         <h3>Timer</h3>
         <div class="minutes">
           <label for="minutes">Minutes</label>
-          <input class="ds-input" type="number" id="minutes" @change="changeInitialTimer()"
-                 :value="getTimerMinutesAndSeconds(configuration.initialTimer).minutes"/>
+          <input class="ds-input" type="number" id="minutes" v-model.number="minutesInput" />
         </div>
         <div class="seconds">
           <label for="seconds">Seconds</label>
-          <input class="ds-input" type="number" id="seconds" @change="changeInitialTimer()"
-                 :value="getTimerMinutesAndSeconds(configuration.initialTimer).seconds"/>
+          <input class="ds-input" type="number" id="seconds" v-model.number="secondsInput" />
         </div>
       </div>
       <hr>
       <div class="footer">
         <button class="ds-button" id="reset-duel" @click="resetDuel()">Reset duel</button>
-        <button class="ds-button" id="save-configuration" v-if="hasConfigurationChanged()" @click="saveConfiguration()">Save</button>
+        <button class="ds-button" id="save-configuration" v-if="hasConfigurationChanged()" @click="saveConfiguration()">
+          Save
+        </button>
       </div>
     </div>
   </div>
@@ -159,12 +166,13 @@ watch(enableSound, (newValue) => {
   position: fixed;
   top: 0;
   right: 0;
-  background-color: var(--color-primary-600);
+  background-color: var(--color-primary-800);
   padding: 1rem;
   width: 275px;
   height: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: -10px 4px 20px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  overflow-y: auto;
 
   color: var(--text-on-primary);
 

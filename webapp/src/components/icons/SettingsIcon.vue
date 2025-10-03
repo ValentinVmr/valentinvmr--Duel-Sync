@@ -4,8 +4,5 @@
   </svg>
 </template>
 
-<script lang="ts">
-export default {
-  name: "SettingsIcon",
-};
+<script setup lang="ts">
 </script>

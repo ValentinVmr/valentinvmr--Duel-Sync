@@ -31,11 +31,17 @@ onMounted(() => {
     clearInterval(pingID);
   });
 
+  socket.onAny((event, ...args) => {
+    console.log(`Event received: ${event}`, args);
+  });
+
   socket.on("room-joined", onRoomJoined);
   socket.on("life-points-updated", updatePlayersData);
   socket.on('timer-updated', updateTimer)
   socket.on('duel-reset', onDuelReset);
   socket.on('configuration-updated', onConfigurationUpdated)
+  socket.on('timer-stopped', () => isTimerRunning.value = false);
+  socket.on('timer-reset', onTimerReset);
 });
 
 const enableSound = ref(true);
@@ -46,6 +52,11 @@ const player2LP = ref(0);
 const remainingTime = ref(0);
 const configuration = ref({} as Configuration);
 const showOptions = ref(false);
+
+const onTimerReset = (data: string) => {
+  remainingTime.value = JSON.parse(data).timer;
+  isTimerRunning.value = false;
+}
 
 const onRoomJoined = (data: string) => {
   const parsedData = JSON.parse(data);
@@ -101,8 +112,6 @@ const sendLifePointsUpdate = (data: { player: number, operation: string, amount:
 }
 
 const startOrStopTimer = () => {
-  isTimerRunning.value = !isTimerRunning.value;
-
   const payload = JSON.stringify({roomId: roomId});
 
   if (isTimerRunning.value) {
@@ -128,6 +137,11 @@ watch(configuration, (newVal, oldVal) => {
 
 }, {deep: true});
 
+watch(isTimerRunning, (newVal) => {
+  console.log(newVal)
+  startOrStopTimer();
+});
+
 const saveConfiguration = (newConfiguration: Configuration) => {
   const payload = JSON.stringify({
     roomId: roomId,
@@ -141,20 +155,20 @@ const saveConfiguration = (newConfiguration: Configuration) => {
 
 <template>
   <main>
-    <div class="points">
-      <YgoLifePoints :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player1LP"/>
-      <YgoLifePoints :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player2LP"/>
-      <Timer :time="remainingTime"/>
-      <button @click="startOrStopTimer">Démarrer / Arrêter le timer</button>
-      <button @click="resetTimer">Réinitialiser le timer</button>
-    </div>
-    <div>
-      <Calculator @updateLifePoints="sendLifePointsUpdate($event)"></Calculator>
+    <button @click="showOptions = !showOptions" class="show-options-button">
+      <SettingsIcon class="icon"/>
+    </button>
+    <div class="content">
+      <div class="points">
+        <YgoLifePoints duelist-name="Duelist 1" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player1LP"/>
+        <Timer :time="remainingTime" v-model="isTimerRunning" @reset-timer="resetTimer"/>
+        <YgoLifePoints duelist-name="Duelist 2" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player2LP"/>
+      </div>
+      <div>
+        <Calculator @updateLifePoints="sendLifePointsUpdate($event)"></Calculator>
+      </div>
     </div>
   </main>
-  <button @click="showOptions = !showOptions" class="show-options-button">
-    <SettingsIcon class="icon" />
-  </button>
   <ConfigurationLayer v-if="configuration?.startingLifePoints"
                       v-model="configuration"
                       v-model:dark-mode="darkMode"
@@ -168,30 +182,39 @@ const saveConfiguration = (newConfiguration: Configuration) => {
 <style>
 main {
   display: flex;
+  gap: 0.5rem;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  gap: 5rem;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    gap: 5rem;
+  }
 }
 
 div.points {
   display: flex;
-  flex-direction: column;
   gap: 2rem;
+  align-items: center;
+
+  @media screen and (max-width: 680px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .show-options-button {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.5rem 1rem;
   font-size: 1rem;
   background-color: transparent;
   fill: var(--text-primary);
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  width:100%;
+  text-align: right;
 }
 
 </style>

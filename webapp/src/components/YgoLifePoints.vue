@@ -13,7 +13,10 @@ const props = defineProps({
   },
   isSoundEnabled: {
     type: Boolean
-  }
+  },
+  duelistName: {
+    type: String,
+  },
 });
 
 const lifePoints = ref(props.lifePoints);
@@ -59,15 +62,47 @@ const generateRandomKey = () => {
 </script>
 
 <template>
-  <div class="lp">
-    <template :key="i" v-for="(digit, i) in digits">
-      <YgoDigit :triggerKey="digitKeys[i]" :fontSize="props.fontSize" :direction="direction" :digit="digit" :iterations="i" :duration="750 + (i * 100)" />
-    </template>
+  <div class="lifepoints">
+    <div class="duelistName">
+      {{ duelistName }}
+    </div>
+    <hr>
+    <div class="digits">
+      <template :key="i" v-for="(digit, i) in digits">
+        <YgoDigit :triggerKey="digitKeys[i]" :fontSize="props.fontSize" :direction="direction" :digit="digit"
+                  :iterations="i" :duration="750 + (i * 100)"/>
+      </template>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.lp {
+.lifepoints {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 2.5rem;
+  color: var(--text-primary);
+
+  background: var(--color-primary-800);
+  border: 2px solid var(--color-primary-600);
+  border-radius: 1rem;
+
+  hr {
+    width: 50%;
+    border: 1px solid var(--color-primary-600);
+    opacity: 0.25;
+    margin-bottom: 1rem;
+  }
+
+  .duelistName {
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    font-weight: lighter;
+  }
+}
+
+.digits {
   display: flex;
   justify-content: center;
 }

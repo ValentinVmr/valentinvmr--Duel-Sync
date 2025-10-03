@@ -8,7 +8,8 @@ module.exports = (socket, payload) => {
 
     const newTimer = resetTimerUseCase.execute({roomId, userId});
     const payloadToSend = JSON.stringify({timer: newTimer});
-    socket.to(roomId).emit('timer-updated', payloadToSend);
-    socket.emit('timer-updated', payloadToSend);
+
+    socket.to(roomId).emit('timer-reset', payloadToSend);
+    socket.emit('timer-reset', payloadToSend);
     log.info(`User ${userId} reset timer in room ${roomId}`);
 }
