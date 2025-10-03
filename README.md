@@ -35,6 +35,23 @@ Then, you can share the room link with your friends to invite them to join the d
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a Pull Request.
 
+## For OBS users
+You can use the application with OBS by adding a browser source and setting the URL to your room link.
+When you have added the browser source, you can follow these steps to make it all transparent :
+1. Right click on the browser source and select `Properties`.
+2. In the "Custom CSS" field, add the following CSS code :
+```css
+* {
+background: transparent !important;
+}
+
+.digits {
+/* Here you can change the color of the life points */
+/* For example, to make them red, you can use : */
+/* color: red !important; */
+}
+```
+
 ## Code owners
 Check the `CODEOWNERS` file to know the code owners.
 
