@@ -63,6 +63,7 @@ const changeInitialTimer = () => {
 
 const resetDuel = () => {
   emits('reset-duel');
+  closeOptions();
 }
 
 const hasConfigurationChanged = () => {
@@ -71,6 +72,11 @@ const hasConfigurationChanged = () => {
 
 const saveConfiguration = () => {
   updateConfiguration();
+  closeOptions();
+}
+
+const closeOptions = () => {
+  emits('update:showOptions', false);
 }
 
 watch(darkMode, (newValue) => {
@@ -92,7 +98,7 @@ watch(secondsInput, () => {
 
 <template>
   <div class="configuration" :class="{ toggled: showOptions }">
-    <button class="close-button" @click="$emit('update:showOptions', false)">
+    <button class="close-button" @click="closeOptions">
       <CrossIcon/>
     </button>
     <h2>Options</h2>

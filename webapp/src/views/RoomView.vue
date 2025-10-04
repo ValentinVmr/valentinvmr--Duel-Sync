@@ -79,7 +79,7 @@ const updatePlayersData = (data: string) => {
 }
 
 const onDuelReset = (data: string) => {
-  updateTimer(data);
+  onTimerReset(data);
   updatePlayersData(data);
 }
 
