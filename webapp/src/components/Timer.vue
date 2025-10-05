@@ -12,7 +12,9 @@ const props = defineProps<{
 
 const emits = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
-  (e: 'reset-timer'): void
+  (e: 'reset-timer'): void,
+  (e: 'stop-timer'): void,
+  (e: 'start-timer'): void
 }>();
 
 const remainingSeconds = () => {

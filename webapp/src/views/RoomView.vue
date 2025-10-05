@@ -41,6 +41,7 @@ onMounted(() => {
   socket.on('duel-reset', onDuelReset);
   socket.on('configuration-updated', onConfigurationUpdated)
   socket.on('timer-stopped', () => isTimerRunning.value = false);
+  socket.on('player-renamed', onPlayerRenamed)
   socket.on('timer-reset', onTimerReset);
 });
 
@@ -49,6 +50,9 @@ const darkMode = ref(true);
 const isTimerRunning = ref(false);
 const player1LP = ref(0);
 const player2LP = ref(0);
+const player1Name = ref('');
+const player2Name = ref('');
+
 const remainingTime = ref(0);
 const configuration = ref({} as Configuration);
 const showOptions = ref(false);
@@ -76,6 +80,8 @@ const updatePlayersData = (data: string) => {
   const playersData = parsedData.playersData;
   player1LP.value = playersData.player1.lifepoints;
   player2LP.value = playersData.player2.lifepoints;
+  player1Name.value = playersData.player1.name;
+  player2Name.value = playersData.player2.name;
 }
 
 const onDuelReset = (data: string) => {
@@ -121,6 +127,23 @@ const startOrStopTimer = () => {
   }
 }
 
+const updatePlayerName = (data: { playerId: string, newName: string }) => {
+  const payload = JSON.stringify({
+    roomId: roomId,
+    playerId: data.playerId,
+    newName: data.newName
+  });
+
+  socket.emit('rename-player', payload);
+}
+
+const onPlayerRenamed = (data: string) => {
+  const parsedData = JSON.parse(data);
+
+  player1Name.value = parsedData.player1.name;
+  player2Name.value = parsedData.player2.name;
+}
+
 watch(configuration, (newVal, oldVal) => {
   if (!oldVal || !oldVal?.startingLifePoints) {
     return;
@@ -130,17 +153,14 @@ watch(configuration, (newVal, oldVal) => {
     return;
   }
 
-  console.log('Old configuration:', oldVal);
-  console.log('Configuration changed, saving...', newVal);
-
   saveConfiguration(newVal);
 
 }, {deep: true});
 
-watch(isTimerRunning, (newVal) => {
-  console.log(newVal)
+watch(isTimerRunning, () => {
   startOrStopTimer();
 });
+
 
 const saveConfiguration = (newConfiguration: Configuration) => {
   const payload = JSON.stringify({
@@ -160,9 +180,9 @@ const saveConfiguration = (newConfiguration: Configuration) => {
     </button>
     <div class="content">
       <div class="points">
-        <YgoLifePoints class="lp" duelist-name="Duelist 1" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player1LP"/>
+        <YgoLifePoints class="lp" :player-id="1" :duelist-name="player1Name" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player1LP"/>
         <Timer class="timer" :time="remainingTime" v-model="isTimerRunning" @reset-timer="resetTimer"/>
-        <YgoLifePoints class="lp" duelist-name="Duelist 2" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player2LP"/>
+        <YgoLifePoints class="lp" :player-id="2" :duelist-name="player2Name" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player2LP"/>
       </div>
       <div>
         <Calculator @updateLifePoints="sendLifePointsUpdate($event)"></Calculator>
@@ -174,9 +194,10 @@ const saveConfiguration = (newConfiguration: Configuration) => {
                       v-model:dark-mode="darkMode"
                       v-model:enable-sound="enableSound"
                       v-model:show-options="showOptions"
+                      :player1-name="player1Name"
+                      :player2-name="player2Name"
+                      @player-name-updated="updatePlayerName"
                       @reset-duel="resetDuel"/>
-
-
 </template>
 
 <style>

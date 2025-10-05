@@ -9,7 +9,9 @@ const props = defineProps<{
   modelValue: Configuration,
   darkMode: boolean,
   enableSound: boolean,
-  showOptions: boolean
+  showOptions: boolean,
+  player1Name: string,
+  player2Name: string
 }>();
 
 const getTimerMinutesAndSeconds = (timerInSeconds: number) => {
@@ -24,12 +26,16 @@ const enableSound = ref(props.enableSound);
 const configuration = ref<Configuration>(Object.assign({}, props.modelValue));
 const minutesInput = ref(getTimerMinutesAndSeconds(configuration.value.initialTimer).minutes);
 const secondsInput = ref(getTimerMinutesAndSeconds(configuration.value.initialTimer).seconds);
+const player1Name = ref(props.player1Name);
+const player2Name = ref(props.player2Name);
+
 const emits = defineEmits<{
   (e: 'update:modelValue', value: Configuration): void,
   (e: 'reset-duel'): void,
   (e: 'update:darkMode', value: boolean): void,
   (e: 'update:enableSound', value: boolean): void,
-  (e: 'update:showOptions', value: boolean): void
+  (e: 'update:showOptions', value: boolean): void,
+  (e: 'playerNameUpdated', value: { playerId: string, newName: string }): void,
 }>();
 
 const updateConfiguration = () => {
@@ -67,12 +73,37 @@ const resetDuel = () => {
 }
 
 const hasConfigurationChanged = () => {
-  return JSON.stringify(configuration.value) !== JSON.stringify(props.modelValue);
+  return JSON.stringify(configuration.value) !== JSON.stringify(props.modelValue) ||
+    player1Name.value !== props.player1Name ||
+    player2Name.value !== props.player2Name;
 }
 
 const saveConfiguration = () => {
   updateConfiguration();
+  updatePlayerNames();
   closeOptions();
+}
+
+const isNameValid = (name: string) => {
+  return name.trim().length > 0;
+}
+
+const isNameDifferent = (name: string, propsName: string) => {
+  return name.trim().toLowerCase() !== propsName.trim().toLowerCase();
+}
+
+const updatePlayerNames = () => {
+  if (isNameValid(player1Name.value) && isNameDifferent(player1Name.value, props.player1Name)) {
+    emits('playerNameUpdated', {playerId: 'player1', newName: player1Name.value.trim()});
+  } else {
+    player1Name.value = props.player1Name;
+  }
+
+  if (isNameValid(player2Name.value) && isNameDifferent(player2Name.value, props.player2Name)) {
+    emits('playerNameUpdated', {playerId: 'player2', newName: player2Name.value.trim()});
+  } else {
+    player2Name.value = props.player2Name;
+  }
 }
 
 const closeOptions = () => {
@@ -110,6 +141,18 @@ watch(secondsInput, () => {
       <div class="sound-effects">
         <label for="sound-effects">Sound effects</label>
         <Checkbox id="sound-effects" v-model="enableSound"/>
+      </div>
+      <hr>
+      <div class="duelists-name">
+        <h3>Duelists name</h3>
+        <div class="duelist1-name">
+          <label for="duelist1-name">Duelist 1 name</label>
+          <input class="ds-input" type="text" id="duelist1-name" v-model="player1Name" />
+        </div>
+        <div class="duelist2-name">
+          <label for="duelist2-name">Duelist 2 name</label>
+          <input class="ds-input" type="text" id="duelist2-name" v-model="player2Name" />
+        </div>
       </div>
       <hr>
       <div class="starting-life-points">
@@ -164,6 +207,10 @@ watch(secondsInput, () => {
   color: var(--text-on-primary);
   width: 40px;
   height: 40px;
+}
+
+.duelist1-name {
+  margin-bottom: 0.5rem;
 }
 
 .configuration {

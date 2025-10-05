@@ -6,6 +6,7 @@ const stopTimer = require('./stop-timer.handler');
 const resetTimer = require('./reset-timer.handler');
 const resetDuel = require('./reset-duel.handler');
 const updateConfiguration = require('./update-configuration.handler');
+const renamePlayer = require('./rename-player.handler');
 
 module.exports = {
     createRoomHandler,
@@ -15,5 +16,6 @@ module.exports = {
     stopTimer,
     resetTimer,
     resetDuel,
-    updateConfiguration
+    updateConfiguration,
+    renamePlayer,
 }

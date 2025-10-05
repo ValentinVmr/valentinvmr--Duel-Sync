@@ -4,11 +4,11 @@ module.exports = class Room {
         this.users = [];
         this.data = {
             player1: {
-                name: "Player1",
+                name: "Duelist 1",
                 lifepoints: 8000,
             },
             player2: {
-                name: "Player2",
+                name: "Duelist 2",
                 lifepoints: 8000,
             },
             timer: 40 * 60, // 40 minutes in seconds
@@ -76,6 +76,10 @@ module.exports = class Room {
 
     updateConfiguration(newConfiguration) {
         this.data.configuration = { ...this.data.configuration, ...newConfiguration };
+    }
+
+    renamePlayer(playerId, newName) {
+        this.data[playerId].name = newName;
     }
 
     tickTimer() {

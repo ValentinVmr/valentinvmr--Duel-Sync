@@ -7,6 +7,12 @@ module.exports = () => {
                 timer: room.getTimer(),
                 configuration: room.getConfiguration()
             }
+        },
+        playersDataDto: (room) => {
+            return {
+                player1: room.data.player1,
+                player2: room.data.player2,
+            }
         }
     }
 }

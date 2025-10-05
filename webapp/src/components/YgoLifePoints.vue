@@ -17,13 +17,16 @@ const props = defineProps({
   duelistName: {
     type: String,
   },
+  playerId: {
+    type: Number,
+    default: 1
+  }
 });
 
 const lifePoints = ref(props.lifePoints);
 const digits = ref([8, 0, 0, 0]);
 const digitKeys = ref(['digit1', 'digit2', 'digit3', 'digit4']);
 const direction = ref('up');
-
 
 watch(() => props.lifePoints, (newValue, oldValue) => {
   lifePoints.value = newValue;
@@ -32,6 +35,10 @@ watch(() => props.lifePoints, (newValue, oldValue) => {
     direction.value = 'up';
   } else {
     direction.value = 'down';
+  }
+
+  if (!oldValue) {
+    return;
   }
 
   if (props.isSoundEnabled) {
@@ -58,11 +65,16 @@ const generateRandomKey = () => {
   return Math.random().toString(36).substring(7);
 }
 
-// 600 ms
+const nameIsDifferentThanDefault = () => {
+  return props.duelistName && props.duelistName.trim() !== '' && props.duelistName.trim().toLowerCase() !== `duelist ${props.playerId}`;
+}
 </script>
 
 <template>
   <div class="lifepoints">
+    <header v-if="nameIsDifferentThanDefault()">
+      Duelist {{ playerId }}
+    </header>
     <div class="duelistName">
       {{ duelistName }}
     </div>
@@ -88,6 +100,14 @@ const generateRandomKey = () => {
   border: 2px solid var(--color-primary-600);
   border-radius: 1rem;
 
+  header {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: lighter;
+    opacity: 0.5;
+    margin-bottom: 0.25rem;
+  }
+
   hr {
     width: 50%;
     border: 1px solid var(--color-primary-600);
@@ -96,7 +116,9 @@ const generateRandomKey = () => {
   }
 
   .duelistName {
-    font-size: 1.25rem;
+    display: flex;
+
+    font-size: 1.5rem;
     text-transform: uppercase;
     font-weight: lighter;
   }
