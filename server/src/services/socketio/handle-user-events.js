@@ -7,7 +7,8 @@ const {
     resetTimer,
     resetDuel,
     updateConfiguration,
-    renamePlayer
+    renamePlayer,
+    rollDice
 } = require('./handlers')
 
 module.exports = (socket) => {
@@ -19,5 +20,6 @@ module.exports = (socket) => {
     socket.on('reset-duel', (data) => resetDuel(socket, data));
     socket.on('update-configuration', (data) => updateConfiguration(socket, data));
     socket.on('rename-player', (data) => renamePlayer(socket, data));
+    socket.on('roll-dice', (data) => rollDice(socket, data));
     socket.on('disconnecting', removeUserHandler);
 }

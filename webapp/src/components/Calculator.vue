@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {ref} from 'vue';
-import CalculatorIcon from "@/components/icons/CalculatorIcon.vue";
+import DiceIcon from "@/components/icons/DiceIcon.vue";
 
 const input = ref('');
 
-const emit = defineEmits(['update-life-points']);
+const emit = defineEmits(['update-life-points', 'roll-dice']);
 
 const handleButtonClick = (value: string) => {
   input.value += value;
@@ -12,6 +12,10 @@ const handleButtonClick = (value: string) => {
 
 const clearInput = () => {
   input.value = '';
+};
+
+const rollDice = () => {
+  emit('roll-dice');
 };
 
 const updateLifePoints = (player: number, operation: string) => {
@@ -39,6 +43,7 @@ const updateLifePoints = (player: number, operation: string) => {
           <button @click="handleButtonClick('8')">8</button>
           <button @click="handleButtonClick('9')">9</button>
           <button @click="handleButtonClick('0')">0</button>
+          <button @click="rollDice()"><DiceIcon /></button>
         </div>
         <div class="calculator-actions">
           <button @click="updateLifePoints(1, 'add')">+ D1</button>

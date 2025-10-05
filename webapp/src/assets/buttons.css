@@ -22,3 +22,7 @@
         cursor: not-allowed;
     }
 }
+
+.ds-button--rounded {
+    border-radius: 100%;
+}

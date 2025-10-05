@@ -37,11 +37,11 @@ watch(() => props.lifePoints, (newValue, oldValue) => {
     direction.value = 'down';
   }
 
-  if (!oldValue) {
+  if (!oldValue && props.lifePoints === 8000) {
     return;
   }
 
-  if (props.isSoundEnabled) {
+  if (oldValue && props.isSoundEnabled) {
     playSound();
     setTimeout(() => updateDigits(), 600);
   } else {

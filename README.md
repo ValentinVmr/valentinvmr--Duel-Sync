@@ -45,6 +45,10 @@ When you have added the browser source, you can follow these steps to make it al
 background: transparent !important;
 }
 
+#dice-container, .dice-box-info {
+    display: none !important;
+}
+
 .digits {
 /* Here you can change the color of the life points */
 /* For example, to make them red, you can use : */

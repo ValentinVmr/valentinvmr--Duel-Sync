@@ -1,20 +1,25 @@
 module.exports = class Room {
     constructor(id) {
+        const initialTimer = 50 * 60; // 50 minutes in seconds
+
         this.id = id;
         this.users = [];
+
         this.data = {
             player1: {
                 name: "Duelist 1",
                 lifepoints: 8000,
+                roundsWon: 0
             },
             player2: {
                 name: "Duelist 2",
                 lifepoints: 8000,
+                roundsWon: 0
             },
-            timer: 40 * 60, // 40 minutes in seconds
+            timer: initialTimer,
             configuration: {
                 startingLifePoints: 8000,
-                initialTimer: 40 * 60,
+                initialTimer,
             }
         }
     }

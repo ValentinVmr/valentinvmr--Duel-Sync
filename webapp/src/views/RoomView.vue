@@ -9,6 +9,7 @@ import Timer from "@/components/Timer.vue";
 import type Configuration from "@/types/configuration.model.ts";
 import ConfigurationLayer from "@/components/ConfigurationLayer.vue";
 import SettingsIcon from "@/components/icons/SettingsIcon.vue";
+import DiceRoll from "@/components/DiceRoll.vue";
 
 const env = useEnv();
 const route = useRoute();
@@ -43,6 +44,7 @@ onMounted(() => {
   socket.on('timer-stopped', () => isTimerRunning.value = false);
   socket.on('player-renamed', onPlayerRenamed)
   socket.on('timer-reset', onTimerReset);
+  socket.on('dice-rolled', onDiceRolled);
 });
 
 const enableSound = ref(true);
@@ -171,6 +173,17 @@ const saveConfiguration = (newConfiguration: Configuration) => {
   socket.emit('update-configuration', payload);
 }
 
+const rollDice = () => {
+  socket.emit('roll-dice', JSON.stringify({roomId: roomId}));
+}
+
+const onDiceRolled = (data: string) => {
+  const parsedData = JSON.parse(data);
+
+  const event = new CustomEvent('roll-dice', {detail: parsedData});
+  window.dispatchEvent(event);
+}
+
 </script>
 
 <template>
@@ -180,12 +193,14 @@ const saveConfiguration = (newConfiguration: Configuration) => {
     </button>
     <div class="content">
       <div class="points">
-        <YgoLifePoints class="lp" :player-id="1" :duelist-name="player1Name" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player1LP"/>
+        <YgoLifePoints class="lp" :player-id="1" :duelist-name="player1Name" :isSoundEnabled="enableSound" :fontSize="4"
+                       :lifePoints="player1LP"/>
         <Timer class="timer" :time="remainingTime" v-model="isTimerRunning" @reset-timer="resetTimer"/>
-        <YgoLifePoints class="lp" :player-id="2" :duelist-name="player2Name" :isSoundEnabled="enableSound" :fontSize="4" :lifePoints="player2LP"/>
+        <YgoLifePoints class="lp" :player-id="2" :duelist-name="player2Name" :isSoundEnabled="enableSound" :fontSize="4"
+                       :lifePoints="player2LP"/>
       </div>
       <div>
-        <Calculator @updateLifePoints="sendLifePointsUpdate($event)"></Calculator>
+        <Calculator @updateLifePoints="sendLifePointsUpdate($event)" @roll-dice="rollDice"></Calculator>
       </div>
     </div>
   </main>
@@ -198,6 +213,8 @@ const saveConfiguration = (newConfiguration: Configuration) => {
                       :player2-name="player2Name"
                       @player-name-updated="updatePlayerName"
                       @reset-duel="resetDuel"/>
+
+  <DiceRoll/>
 </template>
 
 <style>
@@ -227,7 +244,7 @@ div.points {
   }
 
   .timer {
-    width: calc(100% / 3);
+    width: 100%;
   }
 
   @media screen and (max-width: 720px) {
@@ -235,8 +252,8 @@ div.points {
     align-items: stretch;
     width: initial;
 
-    .lp, .timer {
-      width: 100% ;
+    .lp, .timer-and-rolls {
+      width: 100%;
     }
   }
 }
@@ -248,7 +265,7 @@ div.points {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width:100%;
+  width: 100%;
   text-align: right;
 }
 
