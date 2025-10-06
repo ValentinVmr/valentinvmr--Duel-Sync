@@ -10,6 +10,7 @@ import type Configuration from "@/types/configuration.model.ts";
 import ConfigurationLayer from "@/components/ConfigurationLayer.vue";
 import SettingsIcon from "@/components/icons/SettingsIcon.vue";
 import DiceRoll from "@/components/DiceRoll.vue";
+import CoinToss from "@/components/CoinToss.vue";
 
 const env = useEnv();
 const route = useRoute();
@@ -45,6 +46,7 @@ onMounted(() => {
   socket.on('player-renamed', onPlayerRenamed)
   socket.on('timer-reset', onTimerReset);
   socket.on('dice-rolled', onDiceRolled);
+  socket.on('coin-tossed', onCoinTossed);
 });
 
 const enableSound = ref(true);
@@ -177,10 +179,21 @@ const rollDice = () => {
   socket.emit('roll-dice', JSON.stringify({roomId: roomId}));
 }
 
+const tossCoin = () => {
+  socket.emit('toss-coin', JSON.stringify({roomId: roomId}));
+}
+
 const onDiceRolled = (data: string) => {
   const parsedData = JSON.parse(data);
 
   const event = new CustomEvent('roll-dice', {detail: parsedData});
+  window.dispatchEvent(event);
+}
+
+const onCoinTossed = (data: string) => {
+  const parsedData = JSON.parse(data);
+
+  const event = new CustomEvent('toss-coin', {detail: parsedData});
   window.dispatchEvent(event);
 }
 
@@ -200,7 +213,7 @@ const onDiceRolled = (data: string) => {
                        :lifePoints="player2LP"/>
       </div>
       <div>
-        <Calculator @updateLifePoints="sendLifePointsUpdate($event)" @roll-dice="rollDice"></Calculator>
+        <Calculator @updateLifePoints="sendLifePointsUpdate($event)" @roll-dice="rollDice" @toss-coin="tossCoin"></Calculator>
       </div>
     </div>
   </main>
@@ -215,6 +228,7 @@ const onDiceRolled = (data: string) => {
                       @reset-duel="resetDuel"/>
 
   <DiceRoll/>
+  <CoinToss />
 </template>
 
 <style>
@@ -252,7 +266,7 @@ div.points {
     align-items: stretch;
     width: initial;
 
-    .lp, .timer-and-rolls {
+    .lp {
       width: 100%;
     }
   }

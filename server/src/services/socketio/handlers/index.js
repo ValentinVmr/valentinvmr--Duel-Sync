@@ -8,6 +8,7 @@ const resetDuel = require('./reset-duel.handler');
 const updateConfiguration = require('./update-configuration.handler');
 const renamePlayer = require('./rename-player.handler');
 const rollDice = require('./roll-dice.handler');
+const tossCoin = require('./toss-coin.handler');
 
 module.exports = {
     createRoomHandler,
@@ -19,5 +20,6 @@ module.exports = {
     resetDuel,
     updateConfiguration,
     renamePlayer,
-    rollDice
+    rollDice,
+    tossCoin
 }

@@ -37,7 +37,13 @@ const hideDiceBox = () => {
 window.addEventListener('roll-dice', ($event) => {
   showDiceBox.value = true;
   Box.roll(`1d6@${($event as CustomEvent).detail.dieResult}`);
-})
+});
+
+window.addEventListener('toss-coin', () => {
+  if (showDiceBox.value) {
+    hideDiceBox();
+  }
+});
 </script>
 
 
