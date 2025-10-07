@@ -5,6 +5,7 @@ const showTossCoin = ref(false);
 
 const toss = (result: string) => {
   showTossCoin.value = true;
+  disableScroll();
   const coin = document.getElementById("coin");
 
   if (!coin) return;
@@ -16,10 +17,19 @@ const toss = (result: string) => {
   }, 10);
 }
 
-const hideTossCoin = () => {
+const hideTossCoin = (isScrollEnabled = true) => {
   if (showTossCoin.value) {
     showTossCoin.value = false;
+    if(isScrollEnabled) enableScroll();
   }
+}
+
+const disableScroll = () => {
+  document.body.style.overflow = 'hidden';
+}
+
+const enableScroll = () => {
+  document.body.style.overflow = 'auto';
 }
 
 window.addEventListener('toss-coin', ($event) => {
@@ -28,7 +38,7 @@ window.addEventListener('toss-coin', ($event) => {
 
 window.addEventListener('roll-dice', () => {
   if (showTossCoin.value) {
-    hideTossCoin();
+    hideTossCoin(false);
   }
 });
 </script>

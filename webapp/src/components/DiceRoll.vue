@@ -28,20 +28,30 @@ onMounted(() => {
     .catch((e: Error) => console.error(e));
 });
 
-const hideDiceBox = () => {
+const hideDiceBox = (isScrollEnabled = true) => {
   if (showDiceBox.value) {
     showDiceBox.value = false;
+    if(isScrollEnabled) enableScroll();
   }
+}
+
+const disableScroll = () => {
+  document.body.style.overflow = 'hidden';
+}
+
+const enableScroll = () => {
+  document.body.style.overflow = 'auto';
 }
 
 window.addEventListener('roll-dice', ($event) => {
   showDiceBox.value = true;
+  disableScroll();
   Box.roll(`1d6@${($event as CustomEvent).detail.dieResult}`);
 });
 
 window.addEventListener('toss-coin', () => {
   if (showDiceBox.value) {
-    hideDiceBox();
+    hideDiceBox(false);
   }
 });
 </script>
