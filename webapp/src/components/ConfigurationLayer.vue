@@ -29,6 +29,14 @@ const secondsInput = ref(getTimerMinutesAndSeconds(configuration.value.initialTi
 const player1Name = ref(props.player1Name);
 const player2Name = ref(props.player2Name);
 
+watch(() => props.player1Name, (newValue) => {
+  player1Name.value = newValue;
+});
+
+watch(() => props.player2Name, (newValue) => {
+  player2Name.value = newValue;
+});
+
 const emits = defineEmits<{
   (e: 'update:modelValue', value: Configuration): void,
   (e: 'reset-duel'): void,
@@ -178,10 +186,11 @@ watch(secondsInput, () => {
       </div>
       <hr>
       <div class="footer">
-        <button class="ds-button" id="reset-duel" @click="resetDuel()">Reset duel</button>
         <button class="ds-button" id="save-configuration" v-if="hasConfigurationChanged()" @click="saveConfiguration()">
           Save
         </button>
+        <button class="ds-button" id="reset-duel" @click="resetDuel()">Reset duel</button>
+
       </div>
     </div>
   </div>
