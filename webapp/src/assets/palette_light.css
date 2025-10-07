@@ -1,41 +1,42 @@
 :root {
     /* === Primaire === */
-    --color-primary-100: #EAF2FA; /* lightest shade */
-    --color-primary-200: #D5E5F5;
-    --color-primary-300: #C0D8F0; /* light base */
-    --color-primary-400: #ABCBEA; /* medium base */
-    --color-primary-500: #96BEE5; /* intermediate */
-    --color-primary-600: #80B1DF;
-    --color-primary-700: #6AA4DA; /* dark accent */
-    --color-primary-800: #5497D4;
-    --color-primary-900: #3E8ACF; /* darkest shade */
+    --color-primary-100: #27385E; /* ancien 900 */
+    --color-primary-200: #384D75; /* ancien 800 */
+    --color-primary-300: #4F668C; /* ancien 700 */
+    --color-primary-400: #6C83A3; /* ancien 600 */
+    --color-primary-500: #8A9CB7; /* base claire (inchangée) */
+    --color-primary-600: #AEBED3; /* ancien 400 */
+    --color-primary-700: #CAD4E4; /* ancien 300 */
+    --color-primary-800: #E1E7F0; /* ancien 200 */
+    --color-primary-900: #F1F4FA; /* ancien 100 */
 
     /* === Secondaire : Rose / Bordeaux === */
-    --color-secondary-100: #FCEAF0;
-    --color-secondary-200: #F9D5E1;
-    --color-secondary-300: #F6C0D2;
-    --color-secondary-400: #F3ABC3;
-    --color-secondary-500: #F096B3; /* base */
-    --color-secondary-600: #ED80A4;
-    --color-secondary-700: #EA6B95;
-    --color-secondary-800: #E75586;
-    --color-secondary-900: #E44077;
+    --color-secondary-100: #751C49; /* ancien 900 */
+    --color-secondary-200: #8E2557; /* ancien 800 */
+    --color-secondary-300: #A72D66; /* ancien 700 */
+    --color-secondary-400: #C03874; /* ancien 600 */
+    --color-secondary-500: #D64C83; /* base claire (inchangée) */
+    --color-secondary-600: #E47BA4; /* ancien 400 */
+    --color-secondary-700: #EEA2BE; /* ancien 300 */
+    --color-secondary-800: #F6C8D8; /* ancien 200 */
+    --color-secondary-900: #FBE8EF; /* ancien 100 */
 
     /* === Neutres / Gris === */
-    --color-gray-100: #FBFBFB;
-    --color-gray-200: #F0F4F8;  /* adapté aux primaires froids */
-    --color-gray-300: #D9E0E7;  /* adapté aux primaires froids */
-    --color-gray-400: #C4CCD4;
-    --color-gray-500: #A8B4BD;
-    --color-gray-600: #8C98A1;
-    --color-gray-700: #707C85;
-    --color-gray-800: #545F69;
-    --color-gray-900: #38434D;
+    --color-gray-100: #2A2F33; /* ancien 900 */
+    --color-gray-200: #4C5359; /* ancien 800 */
+    --color-gray-300: #70787E; /* ancien 700 */
+    --color-gray-400: #949CA3; /* ancien 600 */
+    --color-gray-500: #B8C0C7; /* base (inchangée) */
+    --color-gray-600: #D8DEE3; /* ancien 400 */
+    --color-gray-700: #EDF1F4; /* ancien 300 */
+    --color-gray-800: #F8FAFB; /* ancien 200 */
+    --color-gray-900: #FFFFFF; /* ancien 100 */
 
     /* === Couleurs texte === */
-    --text-primary: #F0F4F8;       /* texte clair */
-    --text-secondary: #F096B3;     /* accents / liens / boutons */
-    --text-muted: #D9E0E7;         /* textes secondaires */
-    --text-on-primary: #FBFBFB;    /* texte sur fond sombre primaire */
-    --text-on-secondary: #FBFBFB;  /* texte clair sur bouton rose */
+    --text-primary: #2A2F33;       /* texte clair (ancien 100) */
+    --text-secondary: #EEA2BE;     /* accent / liens (ancien 300) */
+    --text-muted: #D8DEE3;         /* texte secondaire (ancien 400) */
+    --text-on-primary: #F1F4FA;    /* texte sombre sur fond clair (ancien 900) */
+    --text-on-secondary: #F1F4FA;  /* texte sombre sur fond clair (ancien 900) */
+
 }

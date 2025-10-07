@@ -204,7 +204,7 @@ watch(secondsInput, () => {
   top: 10px;
   right: 10px;
   cursor: pointer;
-  color: var(--text-on-primary);
+  color: var(--text-primary);
   width: 40px;
   height: 40px;
 }
@@ -227,7 +227,7 @@ watch(secondsInput, () => {
   z-index: 1000;
   overflow-y: auto;
 
-  color: var(--text-on-primary);
+  color: var(--text-primary);
 
   h2, h3 {
     margin-top: 0;

@@ -165,6 +165,13 @@ watch(isTimerRunning, () => {
   startOrStopTimer();
 });
 
+watch(darkMode, (newVal) => {
+  if (newVal) {
+    document.documentElement.classList.add('night');
+  } else {
+    document.documentElement.classList.remove('night');
+  }
+}, {immediate: true});
 
 const saveConfiguration = (newConfiguration: Configuration) => {
   const payload = JSON.stringify({

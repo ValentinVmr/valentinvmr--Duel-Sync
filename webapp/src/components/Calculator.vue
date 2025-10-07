@@ -90,7 +90,7 @@ const updateLifePoints = (player: number, operation: string) => {
   border-radius: 8px;
   padding: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background: var(--color-primary-100);
+  background: var(--color-primary-800);
   color: var(--text-primary);
 }
 
@@ -117,7 +117,7 @@ const updateLifePoints = (player: number, operation: string) => {
   height: 60px;
   font-size: 1.25rem;
   background-color: var(--color-secondary-300);
-  color: var(--text-primary);
+  color: var(--text-on-primary);
   border: none;
   border-radius: 8px;
   transition: background-color 0.3s ease;
@@ -133,7 +133,7 @@ const updateLifePoints = (player: number, operation: string) => {
   height: 60px;
   font-size: 1.5rem;
   background-color: var(--color-primary-300);
-  color: var(--text-primary);
+  color: var(--text-on-primary);
   border: none;
   border-radius: 8px;
   transition: background-color 0.3s ease;

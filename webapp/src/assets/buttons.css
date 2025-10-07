@@ -1,5 +1,5 @@
 .ds-button {
-    color: var(--text-primary);
+    color: var(--text-on-primary);
     background-color: var(--color-secondary-500);
     border: none;
     border-radius: 0.25rem;

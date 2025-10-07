@@ -1,6 +1,8 @@
 @import './base.css';
 @import './buttons.css';
 @import './inputs.css';
+@import './palette.css';
+@import './palette_light.css';
 
 * {
   box-sizing: border-box;
