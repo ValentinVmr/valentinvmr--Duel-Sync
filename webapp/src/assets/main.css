@@ -4,6 +4,7 @@
 
 * {
   box-sizing: border-box;
+  touch-action: manipulation;
 }
 html, body {
   background: var(--color-primary-900);

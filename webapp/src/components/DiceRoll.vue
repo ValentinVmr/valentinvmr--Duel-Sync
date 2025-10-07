@@ -28,7 +28,7 @@ onMounted(() => {
     .catch((e: Error) => console.error(e));
 });
 
-const hideDiceBox = (isScrollEnabled = true) => {
+const hideDiceBox = ($event: MouseEvent, isScrollEnabled = true) => {
   if (showDiceBox.value) {
     showDiceBox.value = false;
     if(isScrollEnabled) enableScroll();
@@ -51,7 +51,7 @@ window.addEventListener('roll-dice', ($event) => {
 
 window.addEventListener('toss-coin', () => {
   if (showDiceBox.value) {
-    hideDiceBox(false);
+    hideDiceBox(new MouseEvent('click'), false);
   }
 });
 </script>

@@ -17,7 +17,7 @@ const toss = (result: string) => {
   }, 10);
 }
 
-const hideTossCoin = (isScrollEnabled = true) => {
+const hideTossCoin = ($event: MouseEvent, isScrollEnabled = true) => {
   if (showTossCoin.value) {
     showTossCoin.value = false;
     if(isScrollEnabled) enableScroll();
@@ -38,7 +38,7 @@ window.addEventListener('toss-coin', ($event) => {
 
 window.addEventListener('roll-dice', () => {
   if (showTossCoin.value) {
-    hideTossCoin(false);
+    hideTossCoin(new MouseEvent('click'), false);
   }
 });
 </script>
