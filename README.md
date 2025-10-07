@@ -45,7 +45,7 @@ When you have added the browser source, you can follow these steps to make it al
 background: transparent !important;
 }
 
-#dice-container, .dice-box-info {
+#dice-container, .dice-box-info, .coin-toss-info, .coin-toss-container {
     display: none !important;
 }
 
