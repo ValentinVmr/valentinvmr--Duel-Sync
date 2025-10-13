@@ -3,6 +3,10 @@ import {RouterView} from 'vue-router'
 
 import './assets/palette.css';
 import HeartIcon from "@/components/icons/HeartIcon.vue";
+
+if (window.location.search.includes('obs')) {
+  document.documentElement.classList.add('obs-mode');
+}
 </script>
 
 <template>
